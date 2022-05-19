@@ -14,8 +14,20 @@ function generateAccessToken(json) {
 router.get('/create', (req, res) => {
   // if (req.header.authorization){
   // }
-  const token = generateAccessToken(claims);
-  res.send(token.compact());
+  var token = generateAccessToken(claims);
+  res.send(token);
+})
+
+//verify JWT
+router.get('/verify/:token', (req, res) => {
+  const { token } = req.params
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, verifiedJWT) => {
+    if(err){
+      res.send(err.message)
+    }else{
+      res.send(verifiedJWT)
+    }
+  })
 })
 
 /* GET home page. */
