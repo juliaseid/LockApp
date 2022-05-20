@@ -8,30 +8,32 @@ dotenv.config();
 
 const claims = { iss: 'myYonomiApp', sub: 'EvDevUser'};
 function generateAccessToken(json) {
-  return jwt.sign(json, process.env.TOKEN_SECRET, { expiresIn: '30s'});
+  return jwt.sign(json, process.env.TOKEN_SECRET, {algorithm: 'RS256'}, { expiresIn: '12h'});
 }
-// Create JWT
-router.get('/create', (req, res) => {
-  // if (req.header.authorization){
-  // }
-  var token = generateAccessToken(claims);
-  res.send(token);
-})
 
-//verify JWT
-router.get('/verify/:token', (req, res) => {
-  const { token } = req.params
-  jwt.verify(token, process.env.TOKEN_SECRET, (err, verifiedJWT) => {
-    if(err){
-      res.send(err.message)
-    }else{
-      res.send(verifiedJWT)
-    }
+//authenticate JWT
+function authenticateToken(req, res, next) {
+  generateAccessToken(claims);
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if (token == null) return res.sendStatus(401)
+
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+    console.log(err)
+
+    if (err) return res.sendStatus(403)
+
+    req.user = user
+
+    next()
   })
-})
+}
+
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', authenticateToken, (req, res, next) => {
+
   res.render('index', { title: 'Express' });
 });
 
