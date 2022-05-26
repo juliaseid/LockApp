@@ -1,25 +1,6 @@
 
 const allDevices = JSON.stringify({
-  query: `{
-    getMyDevices {
-      me {
-        devices {
-          edges{
-            node {
-              id
-              displayName
-              productInformation {
-                description
-                manufacturer
-                model
-                serialNumber
-              }
-            }
-          }
-        }
-      }
-    }
-  }`,
+  query: "query getMyDevices {me {devices {edges{node {id displayName productInformation {description manufacturer model serialNumber}}}}}}",
 });
 
 const lockAction = JSON.stringify({

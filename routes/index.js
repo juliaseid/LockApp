@@ -20,24 +20,24 @@ const accessTokenSecret = process.env.TOKEN_SECRET;
 
 //authenticate JWT
 //build this into standard request options
-const authenticateToken = (req, res, next) => {
-//   // generateAccessToken(claims);
-  // const tokenString = process.env.DEFAULT_TOKEN;
-  const authHeader = req.headers.authorization;
-  if (authHeader) {
-    const token = authHeader.split(' ')[1]
-    jwt.verify(token, accessTokenSecret, (err, user) => {
-      if (err) {
-        return res.sendStatus(403);
-      }
+// const authenticateToken = (req, res, next) => {
+// //   // generateAccessToken(claims);
+//   // const tokenString = process.env.DEFAULT_TOKEN;
+//   const authHeader = req.headers.authorization;
+//   if (authHeader) {
+//     const token = authHeader.split(' ')[1]
+//     jwt.verify(token, accessTokenSecret, (err, user) => {
+//       if (err) {
+//         return res.sendStatus(403);
+//       }
 
-      req.user = user;
-      next();
-    });
-  } else {
-    res.sendStatus(401);
-  }
-};
+//       req.user = user;
+//       next();
+//     });
+//   } else {
+//     res.sendStatus(401);
+//   }
+// };
 
 // const yonomiOptions = {
 //   server: 'https://vd7bzp6o3e.execute-api.us-east-2.amazonaws.com/dev',
@@ -48,11 +48,15 @@ const authenticateToken = (req, res, next) => {
 
 async function queryResponse (query) {
   const { default: fetch, Headers } = await import('node-fetch');
-  const headers = new Headers();
-  const bearerToken = "'" + 'Bearer ' + process.env.DEFAULT_TOKEN + "'";
-  console.log("Bearer Token: " + bearerToken);
-  headers.append('Content-Type', 'application/json');
-  headers.append('Authorization', `${bearerToken}`);
+  const bearerToken = "Bearer "+ process.env.DEFAULT_TOKEN;
+  // const headers = new Headers ()
+  // headers.append("Content-Type", "application/json");
+  // headers.append("Authorization", bearerToken);
+  const headers = {
+    "Content-Type": "application/json",
+    "Authorization": bearerToken,
+  }
+  console.log("headers variable: " + Object.keys(headers));
   try {
     const response = await fetch (
       'https://platform.yonomi.cloud/graphql',
@@ -62,7 +66,8 @@ async function queryResponse (query) {
         body: query,
       }
     )
-      console.log(response);
+      console.log("Headers as set: " + Object.keys(response.headers));
+      // console.log(response);
       if(response.ok) {
         return response.json();
       }
@@ -82,6 +87,8 @@ router.get('/', (req, res) => {
 
 router.get('/devices', async (req, res) => {
   const data = await queryResponse(allDevices);
+  console.log("Headers on req: " + (Object.keys(req.headers)));
+  console.log("Response: " + data);
   res.send(data);
 })
 
