@@ -5,9 +5,7 @@ const https = require('https');
 const dotenv = require('dotenv');
 // const app = require('../app');
 // const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-import fetch from 'node-fetch';
 const { allDevices } = require('../queries');
-
 const bodyParser = require('body-parser');
 // const app = require('../app');
 
@@ -49,15 +47,18 @@ const authenticateToken = (req, res, next) => {
 // }
 
 async function queryResponse (query) {
+  const { default: fetch, Headers } = await import('node-fetch');
+  const headers = new Headers();
+  const bearerToken = "'" + 'Bearer ' + process.env.DEFAULT_TOKEN + "'";
+  console.log("Bearer Token: " + bearerToken);
+  headers.append('Content-Type', 'application/json');
+  headers.append('Authorization', `${bearerToken}`);
   try {
     const response = await fetch (
       'https://platform.yonomi.cloud/graphql',
       {
         method: 'POST',
-        headers: new Headers( {
-          "Content-Type": "application/json",
-          "Authorization": `"Bearer ${process.env.DEFAULT_TOKEN}"`
-        }),
+        headers: headers,
         body: query,
       }
     )
