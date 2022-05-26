@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+//TODO:include this detail
+const bodyParser = require('body-parser');
 
 var indexRouter = require('./routes/index');
 
@@ -17,6 +19,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//TODO:include this detail
+app.use(bodyParser.json());
 
 app.use('/', indexRouter);
 

@@ -1,6 +1,13 @@
+const jwt = require('jsonwebtoken');
+
 //generate JWT secret
 var secret = require('crypto').randomBytes(64).toString('hex');
 console.log (secret);
+
+const claims = { iss: 'myYonomiApp', sub: 'EvDevUser'};
+function generateAccessToken(json) {
+  return jwt.sign(json, process.env.TOKEN_SECRET, {algorithm: 'RS256'}, { expiresIn: '12h'});
+}
 
 // Create JWT
 router.get('/create', (req, res) => {
