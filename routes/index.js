@@ -6,38 +6,17 @@ const dotenv = require('dotenv');
 // const app = require('../app');
 // const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { allDevices } = require('../queries');
-const bodyParser = require('body-parser');
+//TODO: body-parser is imported in app, instantiated with app.use() in app.js
+// const bodyParser = require('body-parser');
 // const app = require('../app');
 
 dotenv.config();
 const tokenString = process.env.DEFAULT_TOKEN;
-const accessTokenSecret = process.env.TOKEN_SECRET;
 //TODO: clarify role of JWT
 // const claims = { iss: 'myYonomiApp', sub: 'EvDevUser'};
 // function generateAccessToken(json) {
 //   return jwt.sign(json, process.env.TOKEN_SECRET, {algorithm: 'RS256'}, { expiresIn: '12h'});
 // }
-
-//authenticate JWT
-//build this into standard request options
-// const authenticateToken = (req, res, next) => {
-// //   // generateAccessToken(claims);
-//   // const tokenString = process.env.DEFAULT_TOKEN;
-//   const authHeader = req.headers.authorization;
-//   if (authHeader) {
-//     const token = authHeader.split(' ')[1]
-//     jwt.verify(token, accessTokenSecret, (err, user) => {
-//       if (err) {
-//         return res.sendStatus(403);
-//       }
-
-//       req.user = user;
-//       next();
-//     });
-//   } else {
-//     res.sendStatus(401);
-//   }
-// };
 
 // const yonomiOptions = {
 //   server: 'https://vd7bzp6o3e.execute-api.us-east-2.amazonaws.com/dev',
@@ -47,16 +26,12 @@ const accessTokenSecret = process.env.TOKEN_SECRET;
 // }
 
 async function queryResponse (query) {
-  const { default: fetch, Headers } = await import('node-fetch');
-  const bearerToken = "Bearer "+ process.env.DEFAULT_TOKEN;
-  // const headers = new Headers ()
-  // headers.append("Content-Type", "application/json");
-  // headers.append("Authorization", bearerToken);
+  const { default: fetch } = await import('node-fetch');
+  const bearerToken = "Bearer "+ tokenString;
   const headers = {
     "Content-Type": "application/json",
     "Authorization": bearerToken,
   }
-  console.log("headers variable: " + Object.keys(headers));
   try {
     const response = await fetch (
       'https://platform.yonomi.cloud/graphql',
@@ -66,8 +41,6 @@ async function queryResponse (query) {
         body: query,
       }
     )
-      console.log("Headers as set: " + Object.keys(response.headers));
-      // console.log(response);
       if(response.ok) {
         return response.json();
       }
@@ -79,17 +52,28 @@ async function queryResponse (query) {
   } 
 };
 
-
 /* GET home page. */
 router.get('/', (req, res) => {
-  res.render('index', { title: 'My Devices' });
+  res.render('index', { title: 'My Device Portal' });
 });
 
 router.get('/devices', async (req, res) => {
   const data = await queryResponse(allDevices);
-  console.log("Headers on req: " + (Object.keys(req.headers)));
-  console.log("Response: " + data);
-  res.send(data);
+  const innerData = Object.values(data)[0];
+  const myData = innerData["me"];
+  const deviceData = myData["devices"];
+  const edgeData = deviceData["edges"];
+  let nodeArray = [];
+  edgeData.forEach(element => {
+    nodeArray.push(Object.values(element));
+  });
+  let deviceArray = [];
+  nodeArray.forEach(e => {
+    e.forEach(d => {
+      deviceArray.push(d);
+    })
+  })
+  res.render('devices', {title: 'Device List', devices: deviceArray})
 })
 
 // router.get('/lockstatus', authenticateToken, (req, res, next) => {
