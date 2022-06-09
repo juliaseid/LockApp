@@ -1,5 +1,5 @@
 
-const allDevices = JSON.stringify({
+exports.allDevices = JSON.stringify({
   query: `
     query
     getMyDevices {
@@ -23,7 +23,7 @@ const allDevices = JSON.stringify({
   `,
 });
 
-const lockAction = JSON.stringify({
+exports.lockAction = JSON.stringify({
   mutation: `{
     makelockActionRequest ("75b7763a-2922-46c1-8011-713d47c680a0": ID!) {
       actionLockSetLocked (deviceId: "75b7763a-2922-46c1-8011-713d47c680a0" lock: true) {
@@ -47,7 +47,7 @@ const lockAction = JSON.stringify({
   }`
 })
 
-const unlockAction = JSON.stringify({
+exports.unlockAction = JSON.stringify({
   mutation: `{
     makelockActionRequest ("75b7763a-2922-46c1-8011-713d47c680a0": ID!) {
       actionLockSetLocked (deviceId: "75b7763a-2922-46c1-8011-713d47c680a0" lock: false) {
@@ -71,4 +71,3 @@ const unlockAction = JSON.stringify({
   }`
 })
 
-module.exports = { allDevices, lockAction, unlockAction };

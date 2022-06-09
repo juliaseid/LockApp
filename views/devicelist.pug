@@ -3,13 +3,12 @@ extends layout
 block content
   h1= title
 
-  p Welcome to #{title}
-
-  h6= "My devices"
+  h6= "Device Name & ID"
   ul 
-  each val in devices
-    li= val.displayName +", " + val.id
-    //- a(href='/lockStatus/:id') Check Lock Status
-    button
+  each device in devices
+    li= device.displayName +", " + device.id
+    a(href='/devicestatus/' + device.id) See Device Status
+    
+    
 
   

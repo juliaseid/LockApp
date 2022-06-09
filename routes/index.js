@@ -13,4 +13,8 @@ router.get('/devicelist', async (req, res) => {
   res.render('devicelist', {title: 'My Devices', devices: devices})
 });
 
+router.get('/devicestatus/:id', function(req , res){
+  res.send('id:' + req.params.id);
+});
+
 module.exports = router;
