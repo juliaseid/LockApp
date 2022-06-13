@@ -1,5 +1,5 @@
 const { queryFunction } = require('../utilities/queryFunction');
-const { allDevices } = require('../utilities/queries');
+const { allDevices, getLockDetails } = require('../utilities/queries');
 
 exports.device_list = async function () {
   try {
@@ -22,6 +22,25 @@ exports.device_list = async function () {
   return deviceArray;
   } catch(err) {
       console.log(err);
+  }
+}
+
+exports.device_details = async function (deviceId) {
+  try {
+    const data = await queryFunction(getLockDetails(deviceId));
+    const innerData = Object.values(data)[0];
+    const deviceData = innerData["device"]
+    const lockTrait = deviceData[0];
+    const pinTrait = deviceData[1];
+    const batteryTrait = deviceData[2];
+    console.log("lock trait");
+    console.log(lockTrait);
+    console.log("PIN trait");
+    console.log(pinTrait);
+    console.log("battery trait");
+    console.log(batteryTrait);
+  } catch(err) {
+    console.log(err)
   }
 }
 
