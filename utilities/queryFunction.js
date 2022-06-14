@@ -1,4 +1,4 @@
-exports.queryFunction = async function (queryText) {
+exports.queryFunction = async function (query, variables) {
   const { default: fetch } = await import('node-fetch');
   const bearerToken = "Bearer "+ process.env.TOKEN_STRING;
   const headers = {
@@ -11,7 +11,7 @@ exports.queryFunction = async function (queryText) {
       {
         method: 'POST',
         headers: headers,
-        body: queryText,
+        body: JSON.stringify ({query, variables})
       }
     )
       if(response.ok) {

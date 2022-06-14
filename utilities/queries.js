@@ -1,35 +1,33 @@
 
-exports.allDevices = JSON.stringify({
-  query: `
-    query
-    getMyDevices {
-      me {
-        devices {
-          edges{
-            node {
-              id
-              displayName
-              productInformation {
-                description
-                manufacturer
-                model
-                serialNumber
-              }
+exports.allDevices =
+  `query
+  getMyDevices {
+    me {
+      devices {
+        edges{
+          node {
+            id
+            displayName
+            productInformation {
+              description
+              manufacturer
+              model
+              serialNumber
             }
           }
         }
       }
     }
-  `,
-});
+  }
+  `;
 
-exports.getLockDetails(deviceId) = JSON.stringify({
-  query: `
-  query getLockStatus ($deviceId: ID!) {
-    device (id: $deviceId) {
+exports.getLockDetails =
+  `query getLockDetails($deviceId: ID!) {
+    device ( id: $deviceId ) {
       traits {
         name instance 
         ... on LockDeviceTrait {
+          properties { supportsIsJammed }
           state {
             isLocked {
               reported { value sampledAt createdAt }
@@ -39,45 +37,14 @@ exports.getLockDetails(deviceId) = JSON.stringify({
             }
           }
         }
-        ...on BatteryLevelDeviceTrait {
-          state {
-            percentage {
-              reported { value sampledAt createdAt }
-            }
-            status {
-              reported { value sampledAt createdAt }
-            }
-          }
-        }
-        ...on PinCodeCredentialDeviceTrait {
-          properties { maxNumberOfPinCodeCredentials }
-          state {
-            pinCodeCredentialList {
-              reported { 
-                value {
-                  edges {
-                    node {
-                      name
-                      pinCode
-                    }
-                  }  
-                } 
-                sampledAt createdAt }
-            }
-          }
-        }
       }
     }
-  }`,
-  variables: `{
-    "deviceId": "${deviceId}"
-  }`,
-});
+  }`;
 
-exports.lockAction = JSON.stringify({
-  query: `
-    mutation 
-    makelockActionRequest ($deviceId: ID!) {
+exports.lockAction = 
+  `
+  mutation 
+  makelockActionRequest ($deviceId: ID!) {
     actionLockSetLocked (deviceId: $deviceId lock: true) {
       actionId
       device {
@@ -96,11 +63,9 @@ exports.lockAction = JSON.stringify({
         }
       }
     }`
-  }
-)
+  ;
 
-exports.unlockAction = JSON.stringify({
-  query: 
+exports.unlockAction =  
   `mutation
   makelockActionRequest ($deviceId: ID!) {
     actionLockSetLocked (deviceId: $deviceId lock: false) {
@@ -121,6 +86,4 @@ exports.unlockAction = JSON.stringify({
         }
       }
     }`
-  }
-)
 

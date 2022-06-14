@@ -27,18 +27,23 @@ exports.device_list = async function () {
 
 exports.device_details = async function (deviceId) {
   try {
-    const data = await queryFunction(getLockDetails(deviceId));
+    var deviceVariable = {deviceId: `${deviceId}`};
+    const data = await queryFunction(getLockDetails, deviceVariable);
     const innerData = Object.values(data)[0];
     const deviceData = innerData["device"]
-    const lockTrait = deviceData[0];
-    const pinTrait = deviceData[1];
-    const batteryTrait = deviceData[2];
+    const lockTrait = deviceData["traits"][0];
+    const lockTraitData = {
+      isLocked : lockTrait.state.isLocked.reported.value,
+      isJammed : lockTrait.state.isJammed.reported.value
+    }
+    // const pinTrait = deviceData[1];
+    // const batteryTrait = deviceData[2];
     console.log("lock trait");
-    console.log(lockTrait);
-    console.log("PIN trait");
-    console.log(pinTrait);
-    console.log("battery trait");
-    console.log(batteryTrait);
+    console.log(lockTraitData);
+    // console.log("PIN trait");
+    // console.log(pinTrait);
+    // console.log("battery trait");
+    // console.log(batteryTrait);
   } catch(err) {
     console.log(err)
   }

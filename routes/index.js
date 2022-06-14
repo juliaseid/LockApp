@@ -13,7 +13,8 @@ router.get('/devicelist', async (req, res) => {
   res.render('devicelist', {title: 'My Devices', devices: devices})
 });
 
-router.get('/devicestatus/:id', function(req , res){
+router.get('/devicedetails/:id', async (req , res) => {
+  await device_controller.device_details(req.params.id);
   res.send('id:' + req.params.id);
 });
 
