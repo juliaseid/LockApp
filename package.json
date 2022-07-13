@@ -12,6 +12,7 @@
     "dotenv": "^16.0.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
+    "js-stringify": "^1.0.2",
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
     "node-fetch": "^3.2.4",

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var device_controller = require('../controllers/device_controller');
+const jsStringify = require('js-stringify');
 
 /* GET home page. */
 router.get('/', (req, res) => {
