@@ -31,19 +31,36 @@ exports.device_details = async function (deviceId) {
     const data = await queryFunction(getLockDetails, deviceVariable);
     const innerData = Object.values(data)[0];
     const deviceData = innerData["device"]
+    const deviceName = deviceData.displayName
     const lockTrait = deviceData["traits"][0];
-    const lockTraitData = {
+    const lockData = {
       isLocked : lockTrait.state.isLocked.reported.value,
       isJammed : lockTrait.state.isJammed.reported.value
     }
-    // const pinTrait = deviceData[1];
-    // const batteryTrait = deviceData[2];
-    console.log("lock trait");
-    console.log(lockTraitData);
-    // console.log("PIN trait");
-    // console.log(pinTrait);
-    // console.log("battery trait");
-    // console.log(batteryTrait);
+    let lockStatus
+    if (lockData.isLocked) {
+      lockStatus = "locked"
+    } else {
+      lockStatus = "unlocked"
+    }
+    let jammedStatus 
+    if (lockData.isJammed) {
+      jammedStatus = "jammed"
+    } else {
+      jammedStatus = "not jammed"
+    }
+    const batteryTrait = deviceData["traits"][2];
+    const batteryLevel = batteryTrait.state.percentage.reported.value
+    const pinTrait = deviceData["traits"][1];
+    const pinCodeCredentialList = pinTrait.state.pinCodeCredentialList.reported.value.edges
+    const pinCodeNames = [] 
+    pinCodeCredentialList.map((n)=> {
+      let nodes = Object.values(n)
+      nodes.map((n) => {
+        pinCodeNames.push(n.name)
+      })
+    })
+    return {deviceName, lockStatus, jammedStatus, batteryLevel, pinCodeNames}
   } catch(err) {
     console.log(err)
   }

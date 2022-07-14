@@ -1,6 +1,12 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h2= title
+
+  h3 #{deviceName}
   p Your device is #{lockStatus}
+  p Your device is #{jammedStatus}
+  p Your battery is #{batteryLevel}% charged 
+  ul PIN Codes 
+  each name in pinCodeNames 
+    li= name

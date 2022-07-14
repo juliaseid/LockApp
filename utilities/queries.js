@@ -24,8 +24,19 @@ exports.allDevices =
 exports.getLockDetails =
   `query getLockDetails($deviceId: ID!) {
     device ( id: $deviceId ) {
+      displayName
       traits {
         name instance 
+        ... on BatteryLevelDeviceTrait {
+          state {
+            percentage {
+              reported { value sampledAt createdAt }
+            }
+            status {
+              reported { value sampledAt createdAt }
+            }
+          }
+        }
         ... on LockDeviceTrait {
           properties { supportsIsJammed }
           state {
@@ -34,6 +45,23 @@ exports.getLockDetails =
             },
             isJammed {
               reported { value sampledAt createdAt }
+            }
+          }
+        }
+        ... on PinCodeCredentialDeviceTrait {
+          state {
+            pinCodeCredentialList {
+              reported {
+                sampledAt
+                createdAt
+                value {
+                  edges {
+                    node {
+                      name
+                    }
+                  }
+                }
+              }
             }
           }
         }

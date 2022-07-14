@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var device_controller = require('../controllers/device_controller');
-const jsStringify = require('js-stringify');
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -14,9 +13,10 @@ router.get('/devicelist', async (req, res) => {
   res.render('devicelist', {title: 'My Devices', devices: devices})
 });
 
-router.get('/devicedetails/:id', async (req , res) => {
-  await device_controller.device_details(req.params.id);
-  res.send('id:' + req.params.id);
+router.get('/devicedetails/:deviceId', async (req , res) => {
+  var deviceId = req.params.deviceId;
+  var deviceData = await device_controller.device_details(deviceId);
+  res.render('devicedetails', {title: 'Device Detail', deviceName: deviceData.deviceName, lockStatus: deviceData.lockStatus, jammedStatus: deviceData.jammedStatus, batteryLevel: deviceData.batteryLevel, pinCodeNames: deviceData.pinCodeNames });
 });
 
 module.exports = router;

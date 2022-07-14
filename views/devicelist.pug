@@ -6,8 +6,8 @@ block content
   h6= "Device Name & ID"
   ul 
   each device in devices
-    li= device.displayName +", " + device.id
-    a(href='/devicedetails/') See Device Status
+    li= device.displayName +", " + device.id  
+      a(href='/devicedetails/' + device.id)  Device Details
     
     
 
