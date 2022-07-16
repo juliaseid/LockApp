@@ -16,7 +16,18 @@ router.get('/devicelist', async (req, res) => {
 router.get('/devicedetails/:deviceId', async (req , res) => {
   var deviceId = req.params.deviceId;
   var deviceData = await device_controller.device_details(deviceId);
-  res.render('devicedetails', {title: 'Device Detail', deviceName: deviceData.deviceName, lockStatus: deviceData.lockStatus, jammedStatus: deviceData.jammedStatus, batteryLevel: deviceData.batteryLevel, pinCodeNames: deviceData.pinCodeNames });
+  res.render('devicedetails', {title: 'Device Detail', deviceName: deviceData.deviceName, deviceId:deviceId, lockStatus: deviceData.lockStatus, jammedStatus: deviceData.jammedStatus, batteryLevel: deviceData.batteryLevel, pinCodeNames: deviceData.pinCodeNames });
 });
+
+router.get('/devicedetails/:deviceId/set_locked', async (req, res) => {
+  var deviceId = req.params.deviceId;
+  var lockAction = device_controller.set_locked(deviceId);
+  var doIt = async() => {
+    await lockAction
+    res.redirect(`/devicedetails/${deviceId}`);
+  }
+  doIt();
+});
+
 
 module.exports = router;

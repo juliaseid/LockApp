@@ -1,5 +1,5 @@
 const { queryFunction } = require('../utilities/queryFunction');
-const { allDevices, getLockDetails } = require('../utilities/queries');
+const { allDevices, getLockDetails, setLocked, setUnlocked } = require('../utilities/queries');
 
 exports.device_list = async function () {
   try {
@@ -61,6 +61,26 @@ exports.device_details = async function (deviceId) {
       })
     })
     return {deviceName, lockStatus, jammedStatus, batteryLevel, pinCodeNames}
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+exports.set_locked = async function (deviceId) {
+  try {
+    var deviceVariable = {deviceId: `${deviceId}`};
+    const data = await queryFunction(setLocked, deviceVariable);
+    console.log (data)
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+exports.set_unlocked = async function (deviceId) {
+  try {
+    var deviceVariable = {deviceId: `${deviceId}`};
+    const data = await queryFunction(setUnlocked, deviceVariable);
+    console.log (data)
   } catch(err) {
     console.log(err)
   }

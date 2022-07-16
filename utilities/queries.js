@@ -69,7 +69,7 @@ exports.getLockDetails =
     }
   }`;
 
-exports.lockAction = 
+exports.setLocked = 
   `
   mutation 
   makelockActionRequest ($deviceId: ID!) {
@@ -93,7 +93,7 @@ exports.lockAction =
     }`
   ;
 
-exports.unlockAction =  
+exports.setUnlocked =  
   `mutation
   makelockActionRequest ($deviceId: ID!) {
     actionLockSetLocked (deviceId: $deviceId lock: false) {
