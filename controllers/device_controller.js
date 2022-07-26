@@ -30,28 +30,35 @@ exports.device_details = async function (deviceId) {
     var deviceVariable = {deviceId: `${deviceId}`};
     const data = await queryFunction(getLockDetails, deviceVariable);
     const innerData = Object.values(data)[0];
-    const deviceData = innerData["device"]
+    const deviceData = innerData.device
     const deviceName = deviceData.displayName
-    const lockTrait = deviceData["traits"][0];
+    const lockDeviceTrait = deviceData.traits[0];
+    const supportsIsJammed = lockDeviceTrait.properties.supportsIsJammed
     const lockData = {
-      isLocked : lockTrait.state.isLocked.reported.value,
-      isJammed : lockTrait.state.isJammed.reported.value
+      isLocked : lockDeviceTrait.state.isLocked.reported.value,
+      isJammed : null
     }
-    let lockState
+    let isLockedState
     if (lockData.isLocked) {
-      lockState = "locked"
+      isLockedState = "locked"
     } else {
-      lockState = "unlocked"
+      isLockedState = "unlocked"
     }
-    let isJammedState 
-    if (lockData.isJammed) {
-      isJammedState = "jammed"
+    let isJammedState
+    if (supportsIsJammed) {
+      lockData.isJammed = lockDeviceTrait.state.isJammed.reported.value
+      if (lockData.isJammed) {
+        isJammedState = "jammed"
+      } else {
+        isJammedState = "not jammed"
+      }
     } else {
-      isJammedState = "not jammed"
+      isJammedState = "does not support isJammed"
     }
-    const batteryTrait = deviceData["traits"][2];
-    const batteryLevel = batteryTrait.state.percentage.reported.value
-    const pinTrait = deviceData["traits"][1];
+    
+    const batteryLevelDeviceTrait = deviceData.traits[2];
+    const batteryLevel = batteryLevelDeviceTrait.state.percentage.reported.value
+    const pinTrait = deviceData.traits[1];
     const pinCodeCredentialList = pinTrait.state.pinCodeCredentialList.reported.value.edges
     const pinCodeCredentialListNames = [] 
     pinCodeCredentialList.map((n)=> {
@@ -60,7 +67,7 @@ exports.device_details = async function (deviceId) {
         pinCodeCredentialListNames.push(n.name)
       })
     })
-    return {deviceName, lockState, isJammedState, batteryLevel, pinCodeCredentialListNames}
+    return {deviceName, isLockedState, isJammedState, batteryLevel, pinCodeCredentialListNames}
   } catch(err) {
     console.log(err)
   }

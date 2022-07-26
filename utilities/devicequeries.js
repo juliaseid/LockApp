@@ -27,16 +27,6 @@ exports.getLockDetails =
       displayName
       traits {
         name instance 
-        ... on BatteryLevelDeviceTrait {
-          state {
-            percentage {
-              reported { value sampledAt createdAt }
-            }
-            status {
-              reported { value sampledAt createdAt }
-            }
-          }
-        }
         ... on LockDeviceTrait {
           properties { supportsIsJammed }
           state {
@@ -62,6 +52,16 @@ exports.getLockDetails =
                   }
                 }
               }
+            }
+          }
+        }
+        ... on BatteryLevelDeviceTrait {
+          state {
+            percentage {
+              reported { value sampledAt createdAt }
+            }
+            status {
+              reported { value sampledAt createdAt }
             }
           }
         }
