@@ -5,10 +5,10 @@ block content
 
   h3 #{deviceName}
   p Your device is #{lockStatus}
-  a(class='button' href=`/devicedetails/${deviceId}/set_locked`) Lock 
-  button(type='button' onclick='setUnlocked()') Unlock
-  p Your device is #{jammedStatus}
+  a(class='button' href=`/devicedetails/${deviceId}/setLocked`) Lock   
+  a(class='button' href=`/devicedetails/${deviceId}/setUnlocked`) Unlock
+  p Your device is #{isJammed}
   p Your battery is #{batteryLevel}% charged 
-  ul PIN Codes 
-  each name in pinCodeNames 
+  ul PIN Code Credentials
+  each name in pinCodeCredentialList 
     li= name

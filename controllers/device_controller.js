@@ -1,5 +1,5 @@
 const { queryFunction } = require('../utilities/queryFunction');
-const { allDevices, getLockDetails, setLocked, setUnlocked } = require('../utilities/queries');
+const { allDevices, getLockDetails, setLocked, setUnlocked } = require('../utilities/devicequeries');
 
 exports.device_list = async function () {
   try {
@@ -37,36 +37,36 @@ exports.device_details = async function (deviceId) {
       isLocked : lockTrait.state.isLocked.reported.value,
       isJammed : lockTrait.state.isJammed.reported.value
     }
-    let lockStatus
+    let lockState
     if (lockData.isLocked) {
-      lockStatus = "locked"
+      lockState = "locked"
     } else {
-      lockStatus = "unlocked"
+      lockState = "unlocked"
     }
-    let jammedStatus 
+    let isJammedState 
     if (lockData.isJammed) {
-      jammedStatus = "jammed"
+      isJammedState = "jammed"
     } else {
-      jammedStatus = "not jammed"
+      isJammedState = "not jammed"
     }
     const batteryTrait = deviceData["traits"][2];
     const batteryLevel = batteryTrait.state.percentage.reported.value
     const pinTrait = deviceData["traits"][1];
     const pinCodeCredentialList = pinTrait.state.pinCodeCredentialList.reported.value.edges
-    const pinCodeNames = [] 
+    const pinCodeCredentialListNames = [] 
     pinCodeCredentialList.map((n)=> {
       let nodes = Object.values(n)
       nodes.map((n) => {
-        pinCodeNames.push(n.name)
+        pinCodeCredentialListNames.push(n.name)
       })
     })
-    return {deviceName, lockStatus, jammedStatus, batteryLevel, pinCodeNames}
+    return {deviceName, lockState, isJammedState, batteryLevel, pinCodeCredentialListNames}
   } catch(err) {
     console.log(err)
   }
 }
 
-exports.set_locked = async function (deviceId) {
+exports.setLocked = async function (deviceId) {
   try {
     var deviceVariable = {deviceId: `${deviceId}`};
     const data = await queryFunction(setLocked, deviceVariable);
@@ -76,7 +76,7 @@ exports.set_locked = async function (deviceId) {
   }
 }
 
-exports.set_unlocked = async function (deviceId) {
+exports.setUnlocked = async function (deviceId) {
   try {
     var deviceVariable = {deviceId: `${deviceId}`};
     const data = await queryFunction(setUnlocked, deviceVariable);

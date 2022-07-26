@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var device_controller = require('../controllers/device_controller');
+var device_controller = require('./controllers/device_controller');
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -21,12 +21,14 @@ router.get('/devicedetails/:deviceId', async (req , res) => {
 
 router.get('/devicedetails/:deviceId/set_locked', async (req, res) => {
   var deviceId = req.params.deviceId;
-  var lockAction = device_controller.set_locked(deviceId);
-  var doIt = async() => {
-    await lockAction
-    res.redirect(`/devicedetails/${deviceId}`);
-  }
-  doIt();
+  await device_controller.set_locked(deviceId);
+  res.redirect(`/devicedetails/${deviceId}`);
+});
+
+router.get('/devicedetails/:deviceId/set_unlocked', async (req, res) => {
+  var deviceId = req.params.deviceId;
+  await device_controller.set_unlocked(deviceId);
+  res.redirect(`/devicedetails/${deviceId}`);
 });
 
 
